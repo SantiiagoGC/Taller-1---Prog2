@@ -27,8 +27,6 @@ public class Estudiante {
 	 */
 	private String telefono;
 	
-	private Modalidad modalidad;
-
 	/**
 	 * Metodo constructor que permite inicializar la clase Estudiante con sus atributos
 	 * @param nombre Este parametro representa al nombre del estudiante
@@ -84,26 +82,13 @@ public class Estudiante {
 		this.telefono = telefono;
 	}
 	
-	
-
-	public Modalidad getModalidad() {
-		return modalidad;
-	}
-
-	public void setModalidad(Modalidad modalidad) {
-		this.modalidad = modalidad;
-	}
 
 	@Override
-	public String toString () {
-		String cadenaEstudiante = "";
-
-		cadenaEstudiante = "Mi nombre es " + nombre + ", mi identificacion es " +
-				identificacion + ",  vivo en " + direccion + ", mi telefono es " + telefono;
-
-		return cadenaEstudiante;
+	public String toString() {
+		return "Estudiante [nombre=" + nombre + ", identificacion=" + identificacion + ", direccion=" + direccion
+				+ ", telefono=" + telefono + "]";
 	}
-	
+
 	public boolean verificarNombre(String nombreBuscar) {
 
 		if(getNombre().equals(nombreBuscar)) {
@@ -112,16 +97,5 @@ public class Estudiante {
 		return false;
 	}
 	
-	//metodo que verifica si la modalidad es a distancia
-	public boolean verificarModalidad() {
-		boolean bandera=false;
-		
-		if(modalidad.getModalidad()==1) {
-			bandera=true;
-		}
-		
-		return bandera;
-	}
-
 	
 }

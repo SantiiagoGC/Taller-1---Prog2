@@ -4,41 +4,39 @@ public class Prestamo {
 	
 
 
-	private String fechaPrestamo;
+	private int fechaPrestamo;
 	private String codigo;
-	private String fechaDevolucion;
+	private String codigoPrestamo;
+	private int fechaDevolucion;
 	private String titulo;
 
 	private Estudiante estudiante;
 	private Bibliotecario bibliotecario;
-
-	private DetallePrestamo detallePrestamo1;
-	private DetallePrestamo detallePrestamo2;
 
 	/**
 	 * ESte es el metodo constructor
 	 * @param fechaPrestamo
 	 * @param codigo
 	 * @param fechaDevolucion
-	 * @param libro1
-	 * @param libro2
 	 * @param estudiante
 	 * @param bibliotecario
 	 */
-	public Prestamo(String fechaPrestamo, String titulo, String codigo, String fechaDevolucion,
+	public Prestamo(int fechaPrestamo, String titulo, String codigo, String codigoPrestamo, int fechaDevolucion,
 			Estudiante estudiante, Bibliotecario bibliotecario) {
 		this.fechaPrestamo = fechaPrestamo;
 		this.titulo=titulo;
 		this.codigo = codigo;
+		this.codigoPrestamo=codigoPrestamo;
 		this.fechaDevolucion = fechaDevolucion;
 		this.estudiante = estudiante;
 		this.bibliotecario = bibliotecario;
 	}
 
-	public Prestamo(String fechaPrestamo, String titulo, String codigo, String fechaDevolucion) {
+	public Prestamo(int fechaPrestamo, String titulo, String codigo, String codigoPrestamo, int fechaDevolucion) {
 		this.fechaPrestamo = fechaPrestamo;
 		this.titulo=titulo;
 		this.codigo = codigo;
+		this.codigoPrestamo=codigoPrestamo;
 		this.fechaDevolucion = fechaDevolucion;
 	}
 
@@ -46,11 +44,11 @@ public class Prestamo {
 
 	}
 
-	public String getFechaPrestamo() {
+	public int getFechaPrestamo() {
 		return fechaPrestamo;
 	}
 
-	public void setFechaPrestamo(String fechaPrestamo) {
+	public void setFechaPrestamo(int fechaPrestamo) {
 		this.fechaPrestamo = fechaPrestamo;
 	}
 
@@ -70,11 +68,11 @@ public class Prestamo {
 		this.codigo = codigo;
 	}
 
-	public String getFechaDevolucion() {
+	public int getFechaDevolucion() {
 		return fechaDevolucion;
 	}
 
-	public void setFechaDevolucion(String fechaDevolucion) {
+	public void setFechaDevolucion(int fechaDevolucion) {
 		this.fechaDevolucion = fechaDevolucion;
 	}
 
@@ -96,21 +94,12 @@ public class Prestamo {
 		this.bibliotecario = bibliotecario;
 	}
 
-
-	public DetallePrestamo getDetallePrestamo1() {
-		return detallePrestamo1;
+	public String getCodigoPrestamo() {
+		return codigoPrestamo;
 	}
 
-	public void setDetallePrestamo1(DetallePrestamo detallePrestamo1) {
-		this.detallePrestamo1 = detallePrestamo1;
-	}
-
-	public DetallePrestamo getDetallePrestamo2() {
-		return detallePrestamo2;
-	}
-
-	public void setDetallePrestamo2(DetallePrestamo detallePrestamo2) {
-		this.detallePrestamo2 = detallePrestamo2;
+	public void setCodigoPrestamo(String codigoPrestamo) {
+		this.codigoPrestamo = codigoPrestamo;
 	}
 
 	public boolean verificarEstudiante(String nombre) {
@@ -126,31 +115,48 @@ public class Prestamo {
 		return false;
 	}
 	
-	
-
-	@Override
-	public String toString() {
-		return "Prestamo [fechaPrestamo=" + fechaPrestamo + ", codigo=" + codigo + ", fechaDevolucion="
-				+ fechaDevolucion + ", titulo=" + titulo + ", estudiante=" + estudiante + ", bibliotecario="
-				+ bibliotecario + ", detallePrestamo1=" + detallePrestamo1 + ", detallePrestamo2=" + detallePrestamo2
-				+ "]";
-	}
 
 	//----------------------------------------------------------------------
 	//1.0 Consultar la cantidad de libros de la editorial “Uniquindio”
 		//que han sido prestados  en la biblioteca y su título empiece por una vocal.
-	public int obtenerCantidadLibrosEditorial(String editorial) {
-
-		int cantidad = 0;
-
-		if(detallePrestamo1 != null){
-			cantidad += detallePrestamo1.obtenerCantidadLibrosEditorialVocal(editorial);
-		}
-		if(detallePrestamo2 != null){
-			cantidad += detallePrestamo2.obtenerCantidadLibrosEditorialVocal(editorial);
-		}
-		return cantidad;
+	
+	@Override
+	public String toString() {
+		return "Prestamo [fechaPrestamo=" + fechaPrestamo + ", codigo=" + codigo + ", codigoPrestamo=" + codigoPrestamo
+				+ ", fechaDevolucion=" + fechaDevolucion + ", titulo=" + titulo + ", estudiante=" + estudiante
+				+ ", bibliotecario=" + bibliotecario + "]";
 	}
-
+	
+	
+	/**
+	 * Este metodo obtiene el precio que tienen los prestamos con una constante de 2 mil por dia
+	 * que puede ser otro valor, el maximo de alquiler de un libro es un mes
+	 * @param fechaPrestamo
+	 * @param fechaDevolucion
+	 * @return el precio de los prestamos segun el tiempo que alquilen un libro
+	 */
+	public double obtenerPrecioPrestamo(int fechaPrestamo, int fechaDevolucion) {
+	
+		int dias;
+		double precio=0;
+		
+		if(fechaPrestamo==fechaDevolucion) {
+		dias=31;
+		precio=dias*2000;
+		}else {
+			if(fechaDevolucion>fechaPrestamo) {
+				dias=fechaDevolucion-fechaPrestamo;
+				precio=dias*2000;
+			} }
+			
+				if(fechaDevolucion<fechaPrestamo) {
+				dias=fechaDevolucion+31-fechaPrestamo;
+				precio=dias*2000;
+					}
+				
+			
+		return precio;
+	}
+	
 
 }

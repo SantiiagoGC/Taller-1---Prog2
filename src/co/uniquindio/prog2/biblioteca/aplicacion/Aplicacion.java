@@ -2,11 +2,11 @@ package co.uniquindio.prog2.biblioteca.aplicacion;
 
 import javax.swing.JOptionPane;
 
+
 import co.uniquindio.prog2.biblioteca.model.Biblioteca;
 import co.uniquindio.prog2.biblioteca.model.Bibliotecario;
 import co.uniquindio.prog2.biblioteca.model.Estudiante;
 import co.uniquindio.prog2.biblioteca.model.Libro;
-import co.uniquindio.prog2.biblioteca.model.Modalidad;
 import co.uniquindio.prog2.biblioteca.model.Prestamo;
 
 public class Aplicacion {
@@ -38,14 +38,21 @@ public class Aplicacion {
 		String identificacionEstudiante;
 		String direccionEstudiante;
 		String telefonoEstudiante;
-		String identificacionLibro;
-		Modalidad modalidad;
 		Estudiante estudiante = null;
+				
+		
+		//variables bibliotecario
 		Bibliotecario bibliotecario = null;
+		String nombreBibliotecario;
+		String identificacionBibliotecario;
+		String direccionBibliotecario;
+		String telefonoBibliotecario;
+		
 		
 		//variables prestamo
-		String fechaPrestamo;
-		String fechaDevolucion;
+		int fechaPrestamo;
+		int fechaDevolucion;
+		String codigoPrestamo;
 		
 		
 		String mensaje = "";
@@ -68,8 +75,8 @@ public class Aplicacion {
 				identificacionEstudiante = leerStringVentana("\"Ingrese la identificacion del estudiante\"");
 				direccionEstudiante = leerStringVentana("\"Ingrese la direccion del estudiante\"");
 				telefonoEstudiante = leerStringVentana("\"Ingrese el telefono del estudiante\"");
-				
-				resultado = validarInformacionEstudiante(nombreEstudiante,identificacionEstudiante,direccionEstudiante,telefonoEstudiante);
+			
+				resultado = validarInformacionEstudianteYBibliotecario(nombreEstudiante,identificacionEstudiante,direccionEstudiante,telefonoEstudiante);
 				if(resultado) {
 					mensaje = biblioteca.crearEstudiante(nombreEstudiante,identificacionEstudiante,direccionEstudiante,telefonoEstudiante);
 					imprimir(mensaje);
@@ -79,6 +86,22 @@ public class Aplicacion {
 				break;
 				
 			case 2:
+				//crear bibliotecario
+				nombreBibliotecario = leerStringVentana("Ingrese el nombre del bibliotecario");
+				identificacionBibliotecario = leerStringVentana("\"Ingrese la identificacion del bibliotecario\"");
+				direccionBibliotecario = leerStringVentana("\"Ingrese la direccion del bibliotecario\"");
+				telefonoBibliotecario = leerStringVentana("\"Ingrese el telefono del bibliotecario\"");
+			
+				resultado = validarInformacionEstudianteYBibliotecario(nombreBibliotecario,identificacionBibliotecario,direccionBibliotecario,telefonoBibliotecario);
+				if(resultado) {
+					mensaje = biblioteca.crearBibliotecario(nombreBibliotecario,identificacionBibliotecario,direccionBibliotecario,telefonoBibliotecario);
+					imprimir(mensaje);
+				}else {
+					imprimirError(mensaje);
+				}
+				break;
+				
+			case 3:
 				//identificacion estudiante
 				identificacionEstudiante = leerStringVentana("\"Ingrese la identificacion del estudiante\"");
 				if(resultado) {
@@ -90,7 +113,7 @@ public class Aplicacion {
 
 				break;
 				
-			case 3:
+			case 4:
 				//Eliminar estudiante
 				identificacionEstudiante=leerStringVentana("\"Ingrese la identificacion del estudiante\"");
 				if(resultado) {
@@ -101,7 +124,7 @@ public class Aplicacion {
 				}
 				break;
 				
-			case 4:
+			case 5:
 				//Actualizar estudiante
 				identificacionEstudiante = leerStringVentana("\"Ingrese la identificacion del estudiante\"");
 
@@ -116,14 +139,62 @@ public class Aplicacion {
 				}
 				break;
 				
-			case 5:
-				//libros (HACER CRUD)
+			case 6:
+				//Prestamos realizados por cada empleado
+				identificacionBibliotecario = leerStringVentana("\"Ingrese la identificacion del bibliotecario\"");
+				int cantidad;
+				if(resultado) {
+					cantidad = biblioteca.consultarCantidadPrestamosEmpleados(identificacionBibliotecario);
+					imprimir("La cantidad de prestamos realizados por este empleado es " +cantidad);
+				}else {
+					imprimirError(mensaje);
+				}
+				break;
+				
+			case 7:
+				//Pagar empleados
+				int aniosAntiguedad;
+				double totalPagar;
+				identificacionBibliotecario = leerStringVentana("\"Ingrese la identificacion del bibliotecario\"");
+				aniosAntiguedad=leerEnteroVentana("\"Ingrese los años de antiguedad del bibliotecario\"");
+				if(resultado) {
+					totalPagar=biblioteca.pagarEmpleados(identificacionBibliotecario, aniosAntiguedad);
+					imprimir("La cantidad a pagar al empleado es " +totalPagar);
+				}else {
+					imprimirError(mensaje);
+				}
+				break;
+				
+				case 8:
+					//Estudiante con mas prestamos
+					String cantidadPrestamos;
+					if(resultado) {
+						cantidadPrestamos = biblioteca.estudianteMasPrestamos();
+						imprimir(cantidadPrestamos);
+					}
+					
+					break;
+					
+				case 9:
+					//Ganancias totales de la empresa
+					double gananciasTotales;
+					if(resultado) {
+						gananciasTotales = biblioteca.recaudacionTotalEmpresa();
+						imprimir("Las ganancias totales son " +gananciasTotales+ " pesos.");
+					}
+					
+					break;
+					
+					
+			case 10:
+				//libros y prestamos
 				do {
-				opcion1=mostrarMenuLibros();
+				opcion1=mostrarMenuLibrosYPrestamos();
 				switch (opcion1) {
 				
 				case 1:
 					//crear libro
+					
 					codigo = leerStringVentana("Ingrese el codigo del libro");
 					isbn = leerStringVentana("\"Ingrese la identificacion del libro\"");
 					titulo = leerStringVentana("\"Ingrese el titulo del libro\"");
@@ -132,7 +203,7 @@ public class Aplicacion {
 					editorial = leerStringVentana("\"Ingrese la editorial del libro\"");
 					estado = leerStringVentana("\"Ingrese el estado del libro\"");
 					fechaPublicacion = leerStringVentana("\"Ingrese la fecha de publicacion del libro dd/mm/aa\"");
-					cantidadDisponible = leerEnteroVentana("\"Ingrese la cantidad de libros disponibles\"");
+					cantidadDisponible = leerEnteroVentana("\"Ingrese la cantidad de libros disponibles\"");	
 					
 					resultado = validarInformacionLibro(codigo, isbn, titulo, autor, cantidadDisponible);
 					if(resultado) {
@@ -143,6 +214,7 @@ public class Aplicacion {
 						imprimirError(mensaje);
 					}
 					break;	
+					
 				
 				case 2:
 					//consultar libro
@@ -157,15 +229,20 @@ public class Aplicacion {
 					break;
 					
 				case 3:
-					//Hacer prestamo
-					fechaPrestamo = leerStringVentana("\"Ingrese la fecha del prestamo dd/mm/aa\"");
-					titulo= leerStringVentana("\"Ingrese el titulo del libro\"");
-					codigo=leerStringVentana("\"Ingrese el codigo del libro\"");
-					fechaDevolucion=leerStringVentana("\"Ingrese la fecha de devolucio\"");
-					
-					resultado= validarInformacionPrestamo(fechaPrestamo, titulo, codigo, fechaDevolucion);
+					//actualizar libro
+					codigo = leerStringVentana("\"Ingrese el codigo del libro\"");
+
 					if(resultado) {
-						mensaje = biblioteca.crearPrestamo(fechaPrestamo, titulo,  codigo,  fechaDevolucion, estudiante, bibliotecario);
+						isbn=leerStringVentana("\"Ingrese el nuevo isbn del libro\"");
+						titulo = leerStringVentana("\"Ingrese el nuevo titulo del libro en caso de cambio\"");
+						autor=leerStringVentana("\"Ingrese el nuevo autor del libro en caso de cambio\"");
+						numeroPaginas=leerEnteroVentana("\"Ingrese el nuevo numero de paginas del libro en caso de cambio\"");
+						editorial=leerStringVentana("\"Ingrese la nueva editorial del libro en caso de cambio\"");
+						estado=leerStringVentana("\"Ingrese el nuevo estado del libro en caso de cambio\"");
+						fechaPublicacion=leerStringVentana("\"Ingrese la nueva fecha de publicacion del libro en caso de cambio\"");
+						cantidadDisponible=leerEnteroVentana("\"Ingrese la nueva cantidad del libro en caso de cambio\"");
+
+						mensaje = biblioteca.actualizarLibro(codigo, isbn,titulo,autor,numeroPaginas,editorial,estado,fechaPublicacion,cantidadDisponible);
 						imprimir(mensaje);
 					}else {
 						imprimirError(mensaje);
@@ -174,29 +251,59 @@ public class Aplicacion {
 					break;
 					
 				case 4:
-					//consultarPrestamo
-					titulo=leerStringVentana("\"Ingrese el titulo del libro\"");
+					//Hacer prestamo
+					imprimir("Advertencia: Solo puede hacer un prestamo de maximo un mes.");
+					fechaPrestamo = leerEnteroVentana("\"Ingrese el dia del prestamo dd\"");
+					titulo= leerStringVentana("\"Ingrese el titulo del libro\"");
+					codigo=leerStringVentana("\"Ingrese el codigo del libro\"");
+					codigoPrestamo=leerStringVentana("\"Ingrese el codigo del Prestamo\"");
+					fechaDevolucion=leerEnteroVentana("\"Ingrese la fecha de devolucion dd\"");
 					
-					resultado=validarInformacionConsultarPresta(titulo);
+					resultado= validarInformacionPrestamo(titulo, codigo, codigoPrestamo);
+					if(fechaPrestamo<31 && fechaDevolucion<31) {
 					if(resultado) {
-						mensaje=biblioteca.consultarPrestamo(titulo);
+						mensaje = biblioteca.crearPrestamo(fechaPrestamo, titulo,  codigo, codigoPrestamo,  fechaDevolucion, estudiante, bibliotecario);
+						imprimir(mensaje);
+					}}else {
+						imprimirError(mensaje);
+					}
+
+					break;
+					
+				case 5:
+					//consultarLibroEnPrestamos
+					codigo=leerStringVentana("\"Ingrese el codigo del Libro\"");
+					
+					resultado=validarInformacionConsultarPresta(codigo);
+					if(resultado) {
+						mensaje=biblioteca.consultarLibroEnPrestamos(codigo);
 						imprimir(mensaje);
 					}else {
 						imprimirError(mensaje);
 					}
 					
-				case 5:
+				case 6:
+					//consultarDatosPrestamo
+					codigo=leerStringVentana("\"Ingrese el codigo del Prestamo\"");
+					
+					if(resultado) {
+						Prestamo prestamo = biblioteca.consultarDatosPrestamo(codigo);
+						imprimir(prestamo.toString());
+					}else {
+						imprimirError(mensaje);
+					
+					}
 					
 					
 				default:
 					break;
 				}
-				}while(opcion1!=6);
+				}while(opcion1!=7);
 				
 			break;
 			
 			}
-		}while(opcion!=6);
+		}while(opcion!=11);
 		
 	}
 	
@@ -209,6 +316,11 @@ public class Aplicacion {
 		JOptionPane.showMessageDialog(null,mensaje);
 	}
 	
+	/**
+	 * Metodo que recibe un String y sirve para leer y guardar en una variable
+	 * @param mensaje
+	 * @return
+	 */
 	public static String  leerStringVentana(String mensaje) {
 		String respuesta = "";
 		respuesta  = JOptionPane.showInputDialog(mensaje);
@@ -216,21 +328,38 @@ public class Aplicacion {
 
 	}
 	
-	private static boolean validarInformacionEstudiante(String nombreEstudiante, String identificacionEstudiante,
-			String direccionEstudiante, String telefonoEstudiante) {
+	/**
+	 * Metodo para validar que se hayan ingresados datos correctos
+	 * @param nombre
+	 * @param identificacion
+	 * @param direccion
+	 * @param telefono
+	 * @return valido un boolean que dice si son validos o no
+	 */
+	private static boolean validarInformacionEstudianteYBibliotecario(String nombre, String identificacion,
+			String direccion, String telefono) {
 		
 		boolean valido = true;
-		if(nombreEstudiante.equalsIgnoreCase("") || identificacionEstudiante.equalsIgnoreCase("")
-				||direccionEstudiante.equalsIgnoreCase("") ||telefonoEstudiante.equalsIgnoreCase("")) {
+		if(nombre.equalsIgnoreCase("") || identificacion.equalsIgnoreCase("")
+				||direccion.equalsIgnoreCase("") ||telefono.equalsIgnoreCase("")) {
 			valido = false;
 		}
 		
-		if(!isNumeric(telefonoEstudiante)) {
+		if(!isNumeric(telefono)) {
 			valido = false;
 		}
 		return valido;
 	}
 	
+	/**
+	 * Metodo para validar que se hayan ingresados datos correctos
+	 * @param codigo
+	 * @param isbn
+	 * @param titulo
+	 * @param autor
+	 * @param cantidadDisponible
+	 * @return valido un boolean que dice si son validos o no
+	 */
 	private static boolean validarInformacionLibro(String codigo, String isbn, String titulo, String autor, int cantidadDisponible ) {
 		
 		boolean valido = true;
@@ -245,32 +374,52 @@ public class Aplicacion {
 		return valido;
 	}
 	
-private static boolean validarInformacionPrestamo(String fechaPrestamo, String titulo, String codigo, String fechaDevolucion)
-{
+	/**
+	 * Metodo para validar que se hayan ingresados datos correctos
+	 * @param titulo
+	 * @param codigo
+	 * @param codigoPrestamo
+	 * @return valido un boolean que dice si son validos o no
+	 */
+	private static boolean validarInformacionPrestamo(String titulo, String codigo, String codigoPrestamo)
+	{
 		
 		boolean valido = true;
-		if(fechaPrestamo.equalsIgnoreCase("") || titulo.equalsIgnoreCase("") || codigo.equalsIgnoreCase("") || fechaDevolucion.equalsIgnoreCase("")  ) {
+		if(titulo.equalsIgnoreCase("") || codigo.equalsIgnoreCase("") || codigoPrestamo.equalsIgnoreCase("")) {
 			valido = false;
 		}
 		
-		if(!isNumeric(codigo)) {
+		if(!isNumeric2(codigo, codigoPrestamo)) {
 			valido = false;
 		}
 	
 		return valido;
 	}
 
-private static boolean validarInformacionConsultarPresta(String titulo) {
+	/**
+	 * Metodo para validar que se hayan ingresados datos correctos
+	 * @param codigo
+	 * @return valido un boolean que dice si son validos o no
+	 */
+	private static boolean validarInformacionConsultarPresta(String codigo) {
 	
 	boolean valido = true;
-	if(titulo.equalsIgnoreCase("")) {
+	if(codigo.equalsIgnoreCase("")) {
 		valido = false;
 	}
 	
-	return valido;
-}
-
+	if(!isNumeric(codigo)) {
+		valido=false;
+	}
 	
+	return valido;
+	}
+
+	/**
+	 * Metodo para verificar si se han ingresado numeros realmente
+	 * @param cadena
+	 * @return true o false
+	 */
 	private static boolean isNumeric(String cadena){
 		try {
 			Integer.parseInt(cadena);
@@ -280,6 +429,11 @@ private static boolean validarInformacionConsultarPresta(String titulo) {
 		}
 	}
 	
+	/**
+	 * Metodo para verificar si se han ingresado numeros realmente
+	 * @param cadena
+	 * @return true o false
+	 */
 	private static boolean isNumeric2(String cadena, String cadena2){
 		try {
 			Integer.parseInt(cadena);
@@ -290,36 +444,55 @@ private static boolean validarInformacionConsultarPresta(String titulo) {
 		}
 	}
 	
+	/**
+	 * Metodo para verificar si se han ingresado numeros realmente
+	 * @param cadena
+	 * @return true o false
+	 */
 	private static void imprimirError(String mensaje) {
 		JOptionPane.showInputDialog(null, "Por favor ingresar datos validos", "Error!", JOptionPane.ERROR_MESSAGE);
 		
 	}
 	
+	/**
+	 * Metodo que muestra el menu principal
+	 * @return el numero que seria la opcion elegida por el usuario
+	 */
 	private static int mostrarMenu() {
 		int opcion = 0;
 		String menu = "Seleccione la opcion que desea realizar :\n"
-				+ " Opciones Estudiantes\n"
+				+ " Opciones Estudiantes y Bibliotecario\n"
 				+ "1 Crear un Estudiante\n"
-				+ "2 Consultar un Estudiante\n"
-				+ "3 Eliminar un Estudiante\n"
-				+ "4 Actualizar un Estudiante\n"
-				+ "5 Opciones Libros\n\n"
-				+ "6 Salir\n";
+				+ "2 Crear un Bibliotecario\n"
+				+ "3 Consultar un Estudiante\n"
+				+ "4 Eliminar un Estudiante\n"
+				+ "5 Actualizar un Estudiante\n"
+				+ "6 Consultar prestamos de los bibliotecarios\n"
+				+ "7 Calcular pago a empleados\n"
+				+ "8 Consultar estudiante con mas prestamos\n"
+				+ "9 Consultar ganancia total de la empresa\n"
+				+ "10 Opciones Libros y Prestamos\n\n"
+				+ "11 Salir\n";
 		
 		opcion = leerEnteroVentana(menu);
 		return opcion;
 	}
 	
-	private static int mostrarMenuLibros() {
+	/**
+	 * Metodo que muestra el menu de libros y prestamos
+	 * @return el numero que seria la opcion elegida por el usuario
+	 */
+	private static int mostrarMenuLibrosYPrestamos() {
 		int opcion = 0;
 		String menu = "Seleccione la opcion que desea realizar :\n"
-				+ " Opciones Libros\n"
+				+ " Opciones Libros y Prestamos\n"
 				+ "1 Crear libro\n"
 				+ "2 Consultar un libro por codigo\n"
-				+ "3 Hacer un prestamo\n" 
-				+ "4 Consultar en prestamos libros\n"
-				+ "5 Libros prog2 distancia\n"
-				+ "6 Salir\n";
+				+ "3 Actualizar libro\n"
+				+ "4 Hacer un prestamo\n" 
+				+ "5 Consultar libros en prestamos\n"
+				+ "6 Consultar Datos Prestamo\n\n"
+				+ "7 Salir\n";
 
 
 	
